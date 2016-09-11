@@ -45,5 +45,6 @@ gulp.task('connect', function () {
 	})
 })
 
+
+// what to do by default.
 gulp.task('default', ['connect', 'watch'])
-//Watch task
