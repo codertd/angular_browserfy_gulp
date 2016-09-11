@@ -14,9 +14,15 @@ gulp.task('styles', function() {
 });
 
 
+gulp.task('copy-html', function() {
+    gulp.src('app/index.html')
+        .pipe(gulp.dest('dist/www/'));
+});
+
+
 gulp.task('browserify', function() {
 	// Grabs the app.js file
-    return browserify('./app/scripts/**/*.js')
+    return browserify('./app/scripts/main.js')
     	// bundles it and creates a file called main.js
         .bundle()
         .pipe(source('main.js'))
@@ -25,17 +31,19 @@ gulp.task('browserify', function() {
 })
 
 
+gulp.task('watch',function() {
+    gulp.watch('app/styles/**/*.scss',['styles']);
+    gulp.watch('app/scripts/**/*.js', ['browserify']);
+    gulp.watch('app/index.html',      ['copy-html']);
+});
+
+
 gulp.task('connect', function () {
 	connect.server({
-		root: 'app',
+		root: 'dist/www',
 		port: 4000
 	})
 })
 
-
+gulp.task('default', ['connect', 'watch'])
 //Watch task
-gulp.task('default',function() {
-    gulp.watch('app/styles/**/*.scss',['styles']);
-
-    gulp.watch('app/scripts/**/*.js',['browserify']);
-});
