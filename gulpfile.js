@@ -21,6 +21,8 @@ var uglify = require('gulp-uglify')
 gulp.task('styles', function() {
     gulp.src('app/styles/**/*')
         .pipe(sass().on('error', sass.logError))
+        // Optionally add autoprefixer
+        //.pipe(autoprefixer("last 2 versions", "> 1%", "ie 8"))
         .pipe(gulp.dest('dist/www/css/'));
 });
 
