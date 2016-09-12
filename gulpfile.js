@@ -61,8 +61,20 @@ gulp.task('browserify', function() {
 
 
 
-gulp.task('build', function () {
-  ['views', 'styles', 'browserify']
+//******
+// Tasks
+//
+gulp.task('watch',function() {
+    gulp.watch(['app/index.html', 'app/views/**/*.html'], ['views']);
+    gulp.watch('app/styles/**/*.scss',['styles']);
+    gulp.watch('app/scripts/**/*.js', ['browserify','lint']);
+});
+
+gulp.task('connect', function () {
+	connect.server({
+		root: 'dist/www',
+		port: 4000
+	})
 });
 
 
@@ -72,22 +84,7 @@ gulp.task('clean:dist', function () {
   ]);
 });
 
-
-
-gulp.task('watch',function() {
-    gulp.watch(['app/index.html', 'app/views/**/*.html'], ['views']);
-    gulp.watch('app/styles/**/*.scss',['styles']);
-    gulp.watch('app/scripts/**/*.js', ['browserify','lint']);
-});
-
-
-gulp.task('connect', function () {
-	connect.server({
-		root: 'dist/www',
-		port: 4000
-	})
-})
-
+gulp.task('build', ['views', 'styles', 'browserify']);
 
 // what to do by default.
 gulp.task('default', ['connect', 'watch'])
