@@ -1,18 +1,21 @@
-var gulp = require('gulp')
+var gulp    = require('gulp')
 var connect = require('gulp-connect')
-var sass = require('gulp-sass');
+var sass    = require('gulp-sass')
+var gutil   = require('gulp-util')
+var del     = require('del');
 
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-
-var jshint = require('gulp-jshint')
-var uglify = require('gulp-uglify')
-var pump = require('pump')
-
+var concat  = require('gulp-concat')
+var source  = require('vinyl-source-stream');
+var buffer  = require('vinyl-buffer');
 
 // requires browserify and vinyl-source-stream
 var browserify = require('browserify')
-var source = require('vinyl-source-stream')
+var source     = require('vinyl-source-stream')
+
+var jshint = require('gulp-jshint')
+var uglify = require('gulp-uglify')
+
+
 
 
 gulp.task('styles', function() {
@@ -21,22 +24,28 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('dist/www/css/'));
 });
 
+// Views task
+gulp.task('views', function() {
+  // Get our index.html
+  gulp.src('app/index.html')
+  // And put it in the dist folder
+  .pipe(gulp.dest('dist/www/'));
 
-gulp.task('copy-html', function() {
-    gulp.src('app/index.html')
-        .pipe(gulp.dest('dist/www/'));
+  // Any other view files from app/views
+  gulp.src('./app/views/**/*')
+  // Will be put in the dist/views folder
+  .pipe(gulp.dest('dist/www/views/'));
 });
 
 
-gulp.task('compress-js', function (cb) {
-  pump([
-        gulp.src('/dist/www/js/main.js'),
-        uglify(),
-        gulp.dest('dist/www/js/main.min.js')
-    ],
-    cb
-  );
+// JSHint task
+gulp.task('lint', function() {
+  gulp.src('./app/scripts/**/*.js')
+  .pipe(jshint())
+  // You can look into pretty reporters as well, but that's another story
+  .pipe(jshint.reporter('default'));
 });
+
 
 gulp.task('browserify', function() {
 	// Grabs the app.js file
@@ -46,15 +55,29 @@ gulp.task('browserify', function() {
         .pipe(source('main.js'))
         .pipe(buffer()) // <----- convert from streaming to buffered vinyl file object
         .pipe(uglify()) // now gulp-uglify works
-        // saves it the dist/www/js/ directory
+        // saves it the dist/www/js/ directory, already concat'd
         .pipe(gulp.dest('./dist/www/js/'));
 })
 
 
+
+gulp.task('build', function () {
+  ['views', 'styles', 'browserify']
+});
+
+
+gulp.task('clean:dist', function () {
+  return del([
+    'dist/**/*',
+  ]);
+});
+
+
+
 gulp.task('watch',function() {
+    gulp.watch(['app/index.html', 'app/views/**/*.html'], ['views']);
     gulp.watch('app/styles/**/*.scss',['styles']);
-    gulp.watch('app/scripts/**/*.js', ['browserify']);
-    gulp.watch('app/index.html',      ['copy-html']);
+    gulp.watch('app/scripts/**/*.js', ['browserify','lint']);
 });
 
 

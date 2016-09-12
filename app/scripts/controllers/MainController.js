@@ -1,3 +1,3 @@
 module.exports = function($scope) {
-	$scope.message = 'Two birds killed with one stone!!?'
-}
+	$scope.message = 'Two birds killed with one stone!!?';
+};
