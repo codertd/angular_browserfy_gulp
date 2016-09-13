@@ -1,22 +1,21 @@
-var gulp    = require('gulp')
-var connect = require('gulp-connect')
-var sass    = require('gulp-sass')
-var gutil   = require('gulp-util')
-var del     = require('del');
+var gulp       = require('gulp')
+var connect    = require('gulp-connect')
+var gutil      = require('gulp-util')
+var del        = require('del');
+var concat     = require('gulp-concat')
 
-var concat  = require('gulp-concat')
-var source  = require('vinyl-source-stream');
-var buffer  = require('vinyl-buffer');
+var source     = require('vinyl-source-stream');
+var buffer     = require('vinyl-buffer');
 
 // requires browserify and vinyl-source-stream
 var browserify = require('browserify')
 var source     = require('vinyl-source-stream')
 
-var jshint = require('gulp-jshint')
-var uglify = require('gulp-uglify')
+var jshint     = require('gulp-jshint')
+var uglify     = require('gulp-uglify')
+var sass       = require('gulp-sass')
 
-
-
+var karma = require('karma').Server;
 
 gulp.task('styles', function() {
     gulp.src('app/styles/**/*')
@@ -61,6 +60,22 @@ gulp.task('browserify', function() {
         .pipe(gulp.dest('./dist/www/js/'));
 })
 
+
+gulp.task('test', ['browserify'], function() {
+    var testFiles = [
+        './test/unit/**/*.js'
+    ];
+
+    return gulp.src(testFiles)
+        .pipe(karma({
+            configFile: './karma.conf.js',
+            action: 'run'
+        }))
+        .on('error', function(err) {
+            console.log('karma tests failed: ' + err);
+            throw err;
+        });
+});
 
 
 //******
