@@ -68,6 +68,9 @@ gulp.task('test', ['browserify'], function(done) {
       singleRun: true
     }, done).start();
 
+    // https://github.com/katowulf/browserify-gulp-boilerplate-simple
+    // https://syropia.net/journal/javascript-testing-with-jasmine-and-gulp-redux
+
 });
 
 

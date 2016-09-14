@@ -8,7 +8,8 @@ module.exports = function (config) {
 		plugins: [
 		      'karma-browserify',
 		      'karma-jasmine',
-					'karma-phantomjs-launcher'
+					'karma-phantomjs-launcher',
+					'karma-spec-reporter'
 		],
 		preprocessors: {
       'test/unit/**/*.js': [/*'coverage',*/ 'browserify']
@@ -21,6 +22,7 @@ module.exports = function (config) {
 		autoWatch: true,
 		singleRun: false,
 		browsers: ['PhantomJS'],
+		reporters: ['spec'],
 		browserify: {
 		      debug: true // output source maps
 		      //transform: ['browserify-istanbul']
