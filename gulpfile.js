@@ -15,7 +15,7 @@ var jshint     = require('gulp-jshint')
 var uglify     = require('gulp-uglify')
 var sass       = require('gulp-sass')
 
-var karma = require('karma').Server;
+var Server     = require('karma').Server;
 
 gulp.task('styles', function() {
     gulp.src('app/styles/**/*')
@@ -61,20 +61,13 @@ gulp.task('browserify', function() {
 })
 
 
-gulp.task('test', ['browserify'], function() {
-    var testFiles = [
-        './test/unit/**/*.js'
-    ];
+gulp.task('test', ['browserify'], function(done) {
 
-    return gulp.src(testFiles)
-        .pipe(karma({
-            configFile: './karma.conf.js',
-            action: 'run'
-        }))
-        .on('error', function(err) {
-            console.log('karma tests failed: ' + err);
-            throw err;
-        });
+    return new Server({
+      configFile: __dirname + '/karma.conf.js',
+      singleRun: true
+    }, done).start();
+
 });
 
 
